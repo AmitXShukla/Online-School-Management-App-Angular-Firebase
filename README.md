@@ -1,5 +1,5 @@
 <h2>Online School Management App</h2>
-<h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHiTISr7IhQi0iu7f1op9ME">Video Tutorials Link!</a></h2>
+<h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHiTISr7IhQi0iu7f1op9ME">Video Tutorials Link will be updated later!</a></h2>
 <h2>Tools: </h2>
 <b>front-end:</b> Angular 7.2.14 & 8.0.0 Beta<br/>
 <b>back-end:</b> Google Firestore / Firebase<br/>
