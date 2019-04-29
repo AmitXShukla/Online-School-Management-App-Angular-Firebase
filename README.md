@@ -1,5 +1,9 @@
 <h2>Online School Management App</h2>
 <h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHiTISr7IhQi0iu7f1op9ME">Video Tutorials Link!</a></h2>
+<h2>Tools: </h2>
+<b>front-end:</b> Angular 7.2.14 & 8.0.0 Beta<br/>
+<b>back-end:</b> Google Firestore / Firebase<br/>
+Pro Version: AI, Machine Learning Algorithm supported Advance features<br/>
 <h2>Objective</h2>
 <ol>
 <li>Manage Small, Medium, Large Schools / Colleges online for free</li>
@@ -19,10 +23,6 @@
 </ol>
 <i>send an email to info@elishconsulting.com for Pro version enquiries.</i>
 
-<h2>Tools: </h2>
-<b>front-end:</b> Angular 7.2.14 & 8.0.0 Beta<br/>
-<b>back-end:</b> Google Firestore / Firebase<br/>
-Pro Version: AI, Machine Learning Algorithm supported Advance features<br/>
 <h2>Let's get started :-</h2>
 <br/><br/>
 Before we start, Please make sure you have latest version of node js installed.<br/>
