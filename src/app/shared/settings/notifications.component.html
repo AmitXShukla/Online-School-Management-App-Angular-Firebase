@@ -1,0 +1,25 @@
+<app-header-admin pageTitle="Notifications" imageUrl="sms" helpType="settingspage"></app-header-admin>
+<mat-card [@fallIn]='state'>
+  <mat-card-content>
+    <mat-error *ngIf="savedChanges">
+      Data is saved.
+      <label class="small-spacer"></label>
+      <mat-icon (click)="this.editDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+    </mat-error>
+    <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
+    <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>
+    <br/>
+    <div *ngFor="let item of (data$ | async)">
+      <font color="(item.readReceipt == true) ? 'red' : 'blue'">{{ item.messageType }}</font>
+      <span class="med-spacer"></span>
+      <mat-icon (click)="updateReceipt(item.messageId);this.data=item.message;toggle=!toggle">zoom_in</mat-icon>
+      <br/>
+    </div>
+    <br/>
+    <br/>
+    <div *ngIf="toggle">
+      {{ this.data }}
+      <mat-icon (click)="toggle=!toggle">close</mat-icon>
+    </div>
+  </mat-card-content>
+</mat-card>

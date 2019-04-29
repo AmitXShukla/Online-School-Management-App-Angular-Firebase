@@ -1,0 +1,567 @@
+<app-header-admin pageTitle="Expenses" imageUrl="business" helpType="voucherpage"></app-header-admin>
+<mat-card>
+  <mat-card-content>
+    <div *ngIf="(toggleField=='searchMode') else (toggleField=='addMode')? showAddMode : ((toggleField=='editMode')? showEditMode : showResMode)">
+      <!-- searchmode -->
+      <form #searchFormData="ngForm" class="example-form">
+        <mat-card-actions align="start">
+          <button type="button" (click)="toggle('resMode');getData(searchFormData.value);" mat-raised-button [disabled]="(code.value == '' && descr.value == '')"
+            color="primary">Search</button>
+          <span class="med-spacer"></span>
+          <span matTooltip="Add New">
+            <mat-icon color="primary" (click)="toggle('addMode')" svgIcon="add"></mat-icon>
+          </span>
+          <span class="small-spacer"></span>
+          <span matTooltip="Show Recent Results">
+            <mat-icon color="primary" (click)="toggle('resMode');getData();" svgIcon="cached"></mat-icon>
+          </span>
+        </mat-card-actions>
+        <mat-form-field class="example-form">
+          <input matInput type="text" placeholder="Expenses Id" id="code" name="code" #code="ngModel" ngModel>
+        </mat-form-field>
+        <br>
+        <mat-form-field class="example-form">
+          <input matInput type="text" placeholder="Expenses Descr" id="descr" name="descr" #descr="ngModel" ngModel>
+        </mat-form-field>
+      </form>
+    </div>
+  </mat-card-content>
+</mat-card>
+<!-- addMode -->
+<ng-template #showAddMode>
+  <form [formGroup]="addDataForm" (ngSubmit)="setData(addDataForm.value);this.addDataForm.reset();" novalidate>
+    <mat-error *ngIf="savedChanges">
+      Data is saved.
+      <label class="small-spacer"></label>
+      <mat-icon (click)="this.addDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+    </mat-error>
+    <div *ngIf="!savedChanges">
+      <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
+      <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>
+      <mat-card-actions align="start">
+        <button type="submit" mat-raised-button [disabled]="!addDataForm.valid" color="primary">Add</button>
+        <button type="reset" (click)="this.addDataForm.reset();" mat-raised-button [disabled]="!addDataForm.valid" color="primary">Clear</button>
+        <span class="med-spacer"></span>
+        <span matTooltip="Search">
+          <mat-icon color="primary" (click)="toggle('searchMode')" svgIcon="search"></mat-icon>
+        </span>
+        <span class="small-spacer"></span>
+        <span matTooltip="Show Recent Results">
+          <mat-icon color="primary" (click)="toggle('resMode');getData();" svgIcon="cached"></mat-icon>
+        </span>
+      </mat-card-actions>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              ID (*)
+            </mat-panel-title>
+            <mat-panel-description>
+              Expenses Header Information
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <input matInput placeholder="Expenses ID" formControlName="code" required>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Descr" formControlName="descr" required>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <mat-select placeholder="Type" formControlName="TYPE" required>
+              <mat-option *ngFor="let code of typeCDs" [value]="code">
+                {{ code }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <mat-select placeholder="Status" formControlName="STATUS" required>
+              <mat-option *ngFor="let code of statusCDs" [value]="code">
+                {{ code }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Vendor
+            </mat-panel-title>
+            <mat-panel-description>
+              Address/Invoice Details
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <input matInput placeholder="Invoice #" formControlName="INVOICE">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Vendor Name" formControlName="VENDOR">
+          </mat-form-field>
+          <div formArrayName="ADDRESS">
+            <div *ngFor="let item of ADDRESSES('addDataForm').controls; let pointIndex=index" [formGroupName]="pointIndex">
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Address Type" formControlName="ADD_TYPE">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Address Line 1" formControlName="ADD_LINE_1">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Address Line 2" formControlName="ADD_LINE_2">
+              </mat-form-field>
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Pin Code" formControlName="PIN_CODE" pattern="^[0-9]*$">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="State" formControlName="STATE">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Country" formControlName="COUNTRY">
+              </mat-form-field>
+              <mat-icon color="warn" svgIcon="clear" (click)="deleteADDRESSES(pointIndex,'addDataForm')"></mat-icon>
+            </div>
+            <mat-icon color="green" svgIcon="add" (click)="addADDRESSES('addDataForm')"></mat-icon>
+          </div>
+          <mat-divider></mat-divider>
+          <div formArrayName="PHONE">
+            <div *ngFor="let item of PHONES('addDataForm').controls; let pointIndex=index" [formGroupName]="pointIndex">
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Phone Type" formControlName="PHONE_TYPE">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Phone #" formControlName="PHONE_NUMBER" pattern="^[0-9]*$">
+              </mat-form-field>
+              <mat-icon color="warn" svgIcon="clear" (click)="deletePHONES(pointIndex,'addDataForm')"></mat-icon>
+            </div>
+            <mat-icon color="green" svgIcon="add" (click)="addPHONES('addDataForm')"></mat-icon>
+          </div>
+          <mat-divider></mat-divider>
+          <div formArrayName="EMAILID">
+            <div *ngFor="let item of EMAILIDS('addDataForm').controls; let pointIndex=index" [formGroupName]="pointIndex">
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Email Type" formControlName="EMAIL_TYPE">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Email ID" formControlName="EMAILID" email>
+              </mat-form-field>
+              <mat-icon color="warn" svgIcon="clear" (click)="deleteEMAILS(pointIndex,'addDataForm')"></mat-icon>
+            </div>
+            <mat-icon color="green" svgIcon="add" (click)="addEMAILS('addDataForm')"></mat-icon>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Dates
+            </mat-panel-title>
+            <mat-panel-description>
+              Important Dates
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Entered Date" type="date" formControlName="EDATE">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Received Date" type="date" formControlName="RDATE">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Due Date" type="date" formControlName="DDATE">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Paid Date" type="date" formControlName="PDATE">
+          </mat-form-field>
+          <br>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Line (*)
+            </mat-panel-title>
+            <mat-panel-description>
+              Amout/Details
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div formArrayName="LINE">
+            <div *ngFor="let item of LINES('addDataForm').controls; let pointIndex=index" [formGroupName]="pointIndex">
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Line #/Code" formControlName="LINE_NUM" required>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Description" formControlName="LINE_NAME" required>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Amount" (keyup)="calculateTotal('addDataForm')" formControlName="AMOUNT" required pattern="^\d*\.?\d+$">
+              </mat-form-field>
+              <mat-icon svgIcon="clear" color="warn" (click)="deleteLINES(pointIndex,'addDataForm')">Delete</mat-icon>
+            </div>
+            <mat-icon svgIcon="add" color="green" (click)="addLINES('addDataForm')"></mat-icon>
+          </div>
+          <br>
+          <mat-form-field>
+            <input matInput readonly="" placeholder="Gross Amount" formControlName="GAMOUNT" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-radio-group formControlName="GAMOUNT_DISC_TYPE">
+            <mat-radio-button value="1">%</mat-radio-button>
+            <mat-radio-button value="2">Fixed</mat-radio-button>
+          </mat-radio-group>
+          <div *ngIf="this.addDataForm.controls.GAMOUNT_DISC_TYPE.value==1">
+            <mat-form-field>
+              <input matInput placeholder="Discount %" formControlName="DISC_G_PERCENT" (keyup)="calculateTotal('addDataForm')" pattern="^\d*\.?\d+$">
+            </mat-form-field>
+          </div>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Discount Amount" formControlName="DISC_GAMOUNT" (keyup)="calculateTotal('addDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-divider></mat-divider>
+          <mat-radio-group formControlName="TAX_TYPE">
+            <mat-radio-button value="1">%</mat-radio-button>
+            <mat-radio-button value="2">Fixed</mat-radio-button>
+          </mat-radio-group>
+          <div *ngIf="this.addDataForm.controls.TAX_TYPE.value==1">
+            <mat-form-field>
+              <input matInput placeholder="Tax %" formControlName="TAX_PERCENT" (keyup)="calculateTotal('addDataForm')" pattern="^\d*\.?\d+$">
+            </mat-form-field>
+          </div>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Tax Amount" formControlName="TAX_GAMOUNT" (keyup)="calculateTotal('addDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-radio-group formControlName="SHIP_TYPE">
+            <mat-radio-button value="1">%</mat-radio-button>
+            <mat-radio-button value="2">Fixed</mat-radio-button>
+          </mat-radio-group>
+          <div *ngIf="this.addDataForm.controls.SHIP_TYPE.value==1">
+            <mat-form-field>
+              <input matInput placeholder="Shipping %" formControlName="SHIP_PERCENT" (keyup)="calculateTotal('addDataForm')" pattern="^\d*\.?\d+$">
+            </mat-form-field>
+          </div>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Shipping Amount" formControlName="SHIP_GAMOUNT" (keyup)="calculateTotal('addDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Final Amount" formControlName="FINAL_AMOUNT" (keyup)="calculateTotal('addDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Paid Amount" formControlName="PAID_AMOUNT" (keyup)="calculateTotal('addDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput readonly="" placeholder="Balance" formControlName="BALANCE" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+        </mat-expansion-panel>
+      </mat-accordion>
+    </div>
+  </form>
+</ng-template>
+<!-- edit mode -->
+<ng-template #showEditMode>
+    <form [formGroup]="editDataForm" (ngSubmit)="updateData(editDataForm.value);" novalidate>
+    <input type="hidden" formControlName="_id" required>
+    <mat-error *ngIf="savedChanges">
+      Data is saved.
+      <label class="small-spacer"></label>
+      <mat-icon (click)="this.editDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+    </mat-error>
+    <div *ngIf="!savedChanges">
+      <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
+      <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>
+      <mat-card-actions align="start">
+        <button type="submit" mat-raised-button [disabled]="!this.editDataForm.valid || this.editDataForm.pristine" color="primary">Update</button>
+        <span class="med-spacer"></span>
+        <span matTooltip="Search">
+          <mat-icon color="primary" (click)="toggle('searchMode')" svgIcon="search"></mat-icon>
+        </span>
+        <span class="small-spacer"></span>
+        <span matTooltip="Shwo Recent Results">
+          <mat-icon color="primary" (click)="toggle('resMode');getData();" svgIcon="cached"></mat-icon>
+        </span>
+      </mat-card-actions>
+      <mat-accordion>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              ID (*)
+            </mat-panel-title>
+            <mat-panel-description>
+              Expenses Header Information
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <input matInput placeholder="Expenses ID" formControlName="code">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Descr" formControlName="descr">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <mat-select placeholder="Type" formControlName="TYPE">
+              <mat-option *ngFor="let code of typeCDs" [value]="code">
+                {{ code }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <mat-select placeholder="Status" formControlName="STATUS">
+              <mat-option *ngFor="let code of statusCDs" [value]="code">
+                {{ code }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Vendor
+            </mat-panel-title>
+            <mat-panel-description>
+              Address/Invoice Details
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <input matInput placeholder="Invoice #" formControlName="INVOICE">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput placeholder="Vendor Name" formControlName="VENDOR">
+          </mat-form-field>
+          <div formArrayName="ADDRESS">
+            <div *ngFor="let item of editDataForm.get('ADDRESS').controls; let pointIndex=index" [formGroupName]="pointIndex">
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Address Type" formControlName="ADD_TYPE">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Address Line 1" formControlName="ADD_LINE_1">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Address Line 2" formControlName="ADD_LINE_2">
+              </mat-form-field>
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Pin Code" formControlName="PIN_CODE" pattern="^[0-9]*$">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="State" formControlName="STATE">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Country" formControlName="COUNTRY">
+              </mat-form-field>
+              <mat-icon color="warn" svgIcon="clear" (click)="deleteADDRESSES(pointIndex,'editDataForm')"></mat-icon>
+            </div>
+            <mat-icon color="green" svgIcon="add" (click)="addADDRESSES('editDataForm')"></mat-icon>
+          </div>
+          <mat-divider></mat-divider>
+          <div formArrayName="PHONE">
+            <div *ngFor="let item of editDataForm.get('PHONE').controls; let pointIndex=index" [formGroupName]="pointIndex">
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Phone Type" formControlName="PHONE_TYPE">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Phone #" formControlName="PHONE_NUMBER" pattern="^[0-9]*$">
+              </mat-form-field>
+              <mat-icon color="warn" svgIcon="clear" (click)="deletePHONES(pointIndex,'editDataForm')"></mat-icon>
+            </div>
+            <mat-icon color="green" svgIcon="add" (click)="addPHONES('editDataForm')"></mat-icon>
+          </div>
+          <mat-divider></mat-divider>
+          <div formArrayName="EMAILID">
+            <div *ngFor="let item of editDataForm.get('EMAILID').controls; let pointIndex=index" [formGroupName]="pointIndex">
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Email Type" formControlName="EMAIL_TYPE">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Email ID" formControlName="EMAILID" email>
+              </mat-form-field>
+              <mat-icon color="warn" svgIcon="clear" (click)="deleteEMAILS(pointIndex,'editDataForm')"></mat-icon>
+            </div>
+            <mat-icon color="green" svgIcon="add" (click)="addEMAILS('editDataForm')"></mat-icon>
+          </div>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Dates
+            </mat-panel-title>
+            <mat-panel-description>
+              Important Dates
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Entered Date" type="date" formControlName="EDATE">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Received Date" type="date" formControlName="RDATE">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Due Date" type="date" formControlName="DDATE">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Expenses Paid Date" type="date" formControlName="PDATE">
+          </mat-form-field>
+          <br>
+        </mat-expansion-panel>
+        <mat-expansion-panel>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Line (*)
+            </mat-panel-title>
+            <mat-panel-description>
+              Amout/Details
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div formArrayName="LINE">
+            <div *ngFor="let item of editDataForm.get('LINE').controls; let pointIndex=index" [formGroupName]="pointIndex">
+              <br>
+              <mat-form-field>
+                <input matInput placeholder="Line #/Code" formControlName="LINE_NUM" required>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Description" formControlName="LINE_NAME" required>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput placeholder="Amount" (keyup)="calculateTotal('editDataForm')" formControlName="AMOUNT" required pattern="^\d*\.?\d+$">
+              </mat-form-field>
+              <mat-icon svgIcon="clear" color="warn" (click)="deleteLINES(pointIndex,'editDataForm')">Delete</mat-icon>
+            </div>
+            <mat-icon svgIcon="add" color="green" (click)="addLINES('editDataForm')"></mat-icon>
+          </div>
+          <br>
+          <mat-form-field>
+            <input matInput readonly="" placeholder="Gross Amount" formControlName="GAMOUNT" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-radio-group formControlName="GAMOUNT_DISC_TYPE">
+            <mat-radio-button value="1">%</mat-radio-button>
+            <mat-radio-button value="2">Fixed</mat-radio-button>
+          </mat-radio-group>
+          <div *ngIf="this.editDataForm.controls.GAMOUNT_DISC_TYPE.value==1">
+            <mat-form-field>
+              <input matInput placeholder="Discount %" formControlName="DISC_G_PERCENT" (keyup)="calculateTotal('editDataForm')" pattern="^\d*\.?\d+$">
+            </mat-form-field>
+          </div>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Discount Amount" formControlName="DISC_GAMOUNT" (keyup)="calculateTotal('editDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-divider></mat-divider>
+          <mat-radio-group formControlName="TAX_TYPE">
+            <mat-radio-button value="1">%</mat-radio-button>
+            <mat-radio-button value="2">Fixed</mat-radio-button>
+          </mat-radio-group>
+          <div *ngIf="this.editDataForm.controls.TAX_TYPE.value==1">
+            <mat-form-field>
+              <input matInput placeholder="Tax %" formControlName="TAX_PERCENT" (keyup)="calculateTotal('editDataForm')" pattern="^\d*\.?\d+$">
+            </mat-form-field>
+          </div>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Tax Amount" formControlName="TAX_GAMOUNT" (keyup)="calculateTotal('editDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-radio-group formControlName="SHIP_TYPE">
+            <mat-radio-button value="1">%</mat-radio-button>
+            <mat-radio-button value="2">Fixed</mat-radio-button>
+          </mat-radio-group>
+          <div *ngIf="this.editDataForm.controls.SHIP_TYPE.value==1">
+            <mat-form-field>
+              <input matInput placeholder="Shipping %" formControlName="SHIP_PERCENT" (keyup)="calculateTotal('editDataForm')" pattern="^\d*\.?\d+$">
+            </mat-form-field>
+          </div>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Shipping Amount" formControlName="SHIP_GAMOUNT" (keyup)="calculateTotal('editDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Final Amount" formControlName="FINAL_AMOUNT" (keyup)="calculateTotal('editDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput placeholder="Paid Amount" formControlName="PAID_AMOUNT" (keyup)="calculateTotal('editDataForm')" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <br>
+          <mat-form-field>
+            <input matInput readonly="" placeholder="Balance" formControlName="BALANCE" pattern="^\d*\.?\d+$">
+          </mat-form-field>
+        </mat-expansion-panel>
+      </mat-accordion>
+        
+    </div>
+  </form>
+</ng-template>
+<!-- Results mode -->
+<ng-template #showResMode>
+  <mat-card-actions align="start">
+    <span class="med-spacer"></span>
+    <span class="med-spacer"></span>
+    <span class="med-spacer"></span>
+    <span matTooltip="Add New">
+      <mat-icon color="primary" (click)="toggle('addMode')" svgIcon="add"></mat-icon>
+    </span>
+    <span class="small-spacer"></span>
+    <span matTooltip="Search All">
+      <mat-icon color="primary" (click)="toggle('searchMode')" svgIcon="search"></mat-icon>
+    </span>
+  </mat-card-actions>
+  <div class="example-header">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search Recent Results">
+    </mat-form-field>
+  </div>
+  <div class="example-container mat-elevation-z8">
+    <mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="code">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Expenses Id</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="descr">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Descr</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.descr}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="_id">
+        <mat-header-cell *matHeaderCellDef> action </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span matTooltip="Edit">
+            <button mat-icon-button (click)="getDoc(row._id)">
+              <mat-icon color="primary" svgIcon="edit"></mat-icon>
+            </button>
+          </span>
+          <span matTooltip="Delete">
+            <button mat-icon-button (click)="deleteDoc(row._id)">
+              <mat-icon color="primary" svgIcon="delete"></mat-icon>
+            </button>
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+</ng-template>

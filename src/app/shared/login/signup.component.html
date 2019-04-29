@@ -1,0 +1,53 @@
+<app-header-admin pageTitle="Sign Up" imageUrl="fiber_new" helpType="homepage"></app-header-admin>
+<mat-card *ngIf="!savedChanges else showSavedChangesCard">
+  <form #formData='ngForm' (ngSubmit)="onSubmit(formData)">
+    <mat-card-content>
+      <mat-card-title>
+        <span class="small-headline">Create Account</span>
+        <span class="small-spacer"></span>
+        <a [routerLink]="['/login']" color="primary">
+          <mat-icon>backspace</mat-icon>
+        </a>
+      </mat-card-title>
+      <mat-card-actions align="start" *ngIf="error">
+        <mat-error>User ID is already taken.</mat-error>
+      </mat-card-actions>
+      <div *ngIf="dataLoading">
+        <mat-progress-spinner mode="indeterminate" [attr.color]="primary" [value]="15"></mat-progress-spinner>
+      </div>
+      <div *ngIf="brokenNetwork" class="label-error">Network connection error.</div>
+      <mat-card-actions align="start">
+        <button type="submit" [disabled]="!formData.valid" mat-raised-button color="primary">Sign up</button>
+      </mat-card-actions>
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="email" name="email" #email="ngModel" ngModel required email>
+      </mat-form-field>
+      <mat-error *ngIf="email.invalid && (email.dirty || email.touched)">Please enter a valid email.</mat-error>
+      <mat-form-field class="example-full-width">
+        <input matInput type="password" placeholder="Choose app password" name="password" #password="ngModel" ngModel required minlength="5"
+          maxlength="30">
+      </mat-form-field>
+      <span *ngIf="password.invalid && (password.dirty || password.touched)">
+        <mat-error *ngIf="password.errors['required']">Password is Required.</mat-error>
+        <mat-error *ngIf="password.errors['minlength']">Password can't be less than 5 characters.</mat-error>
+        <mat-error *ngIf="password.errors['maxlength']">Password can't be more than 30 characters.</mat-error>
+      </span>
+    </mat-card-content>
+  </form>
+</mat-card>
+<ng-template #showSavedChangesCard>
+  <br>
+  <br>
+  <br>
+  <br>
+  <mat-error>
+    A New userId is created. Plese login back with your emailid and password.
+  </mat-error>
+  <br>
+  <br>
+  <br>
+  <br>
+  <mat-card-actions align="start">
+    <button type="button" (click)="savedChanges=false;routeLoginPage();" mat-raised-button color="primary">Close</button>
+  </mat-card-actions>
+</ng-template>

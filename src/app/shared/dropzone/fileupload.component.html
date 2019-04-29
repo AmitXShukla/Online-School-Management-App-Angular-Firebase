@@ -1,0 +1,39 @@
+<span *ngIf="error"><font color="red">Error occured. {{ errorMessage }}</font></span>
+<div *ngIf="percentage | async as pct">
+  <progress class="progress is-info" 
+            [value]="pct" 
+            max="100">        
+  </progress>
+  {{ pct | number }}%
+  <br>
+  <span><font color="red">Document is saved.</font></span>
+</div>
+<div class="dropzone" 
+     dropZone
+     (hovered)="toggleHover($event)"
+     (dropped)="startUpload($event)"
+     [class.hovering]="isHovering"
+     *ngIf="!percentage">
+     <h3>File Upload</h3>
+     <div class="file">
+        <label class="file-label">
+        <input class="file-input" type="file" (change)="startUpload($event)">
+          <span class="file-cta">
+            <span class="file-icon">
+              <i class="fa fa-upload"></i>
+            </span>
+          </span>
+        </label>
+      </div>
+</div>
+<div *ngIf="snapshot | async as snap">
+  {{ snap.bytesTransferred | fileSize }} of {{ snap.totalBytes | fileSize }} 
+  <div *ngIf="downloadURL | async as url">
+    <h3>Results!</h3>
+    <img [src]="url" width="300" height="300"><br>
+    <!--<a [href]="url" target="_blank" rel="noopener">Download Me!</a>-->
+  </div> 
+  <button mat-raised-button color="primary" (click)="task.pause()" class="button is-warning" [disabled]="!isActive(snap)">Pause</button>
+  <button mat-raised-button color="primary" (click)="task.cancel()" class="button is-danger" [disabled]="!isActive(snap)">Cancel</button>
+  <button mat-raised-button color="primary" (click)="task.resume()" class="button is-info"   [disabled]="!(snap?.state === 'paused')">Resume</button>
+</div>

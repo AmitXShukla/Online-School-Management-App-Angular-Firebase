@@ -1,0 +1,150 @@
+<div *ngIf="helpType=='homepage'" class="primary">
+    <mat-icon svgIcon="help"></mat-icon>
+    <b>Help:</b> Login Methods
+    <br>
+    <br> Elish ERP App provide three different methods to sign in.
+    <br>
+    <br> You can use existing Google/Facebook login or using your email with any password.
+    <br>app password is NOT same as your email password.
+    <br>
+    <br> Please send email to contact@elishconsulting.com for any support.
+</div>
+<div *ngIf="helpType=='leavepage'" class="primary">
+    <mat-icon svgIcon="help"></mat-icon>
+    <b>Help:</b> Setup Leave Code
+    <br>
+    <br> Setup different Leave Codes for different Employee Types.
+    <br> Later, on Employee manage page, you can attach each leave type setup here to Employee.
+</div>
+<div *ngIf="helpType=='employeepage'" class="primary">
+            <mat-icon svgIcon="help"></mat-icon>
+            <b>Help:</b> Manage Employee
+            <br>
+            <br> Please fill in all required details for an Employee.
+            <br><br>
+            Please give employee a unique employee ID and a "SECRET Key" shared only with your employee.
+            <br><br>
+            Employee will be able to use this app to see his Salary and other Vouchers using this SECRET KEY only.
+    </div>
+<div *ngIf="helpType=='jobpage'" class="primary">
+    <mat-icon svgIcon="help"></mat-icon>
+    <b>Help:</b> Setup Job Code
+    <br>
+    <br> Setup different Job Codes for different Employee Types.
+    <br> Later, on Employee manage page, you can attach each Job type setup here to Employee.
+</div>
+<div *ngIf="helpType=='salarypage'" class="primary">
+            <mat-icon svgIcon="help"></mat-icon>
+            <b>Help:</b> Setup Salary Code
+            <br>
+            <br> Setup different Salary Codes for different Employee Types.
+            <br> Later, on Employee manage page, you can attach each Salary type setup here to Employee.
+            <br><br>
+            please see, Employee salary will be calculated based on this salary code attached to his/her profile.
+    </div>
+<div *ngIf="helpType=='settingspage'">
+    <mat-vertical-stepper #stepper="matVerticalStepper">
+            <mat-step label="Step 1">
+                    Please signup or use your Google/Facebook account to login.
+            </mat-step>
+            <mat-step label="Step 2">
+                    You will need a company code to access your provider data.
+                    <br> For trail accounts, please use
+                    <font color="red">guest</font> as company
+                    <mat-icon svgIcon="vpn"></mat-icon> code.
+            </mat-step>
+            <mat-step label="Step 3">
+                    <font color="red"> If you are an admin or company/provider</font>
+                    <br> Click below to signup for a
+                    <mat-icon svgIcon="new"></mat-icon>
+                    <mat-icon svgIcon="vpn"></mat-icon>.
+                    <br> Using A provider (Pro) Account, you can upload
+                    <mat-icon svgIcon="cloud">"</mat-icon> your own Content for your Organizaiton.
+            </mat-step>
+            <mat-step label="Step 4">
+                    <font color="red">
+                            <br>IMPORTANT
+                            <br> There is only ONE FREE Admin key per Company. That means, only one Admin can see "ALL" data
+                            and all other users will see "only their own data they created".</font>
+                    <br>
+                    <br> If you need more admin keys, please send an email to info@elishconsulting.com
+            </mat-step>
+    </mat-vertical-stepper>
+</div>
+<div *ngIf="helpType=='settings'">
+    <mat-vertical-stepper #stepper="matVerticalStepper">
+            <mat-step label="Step 1">
+                    You are signed in now, please update your
+                    <mat-icon svgIcon="account_circle"></mat-icon> preferences.
+            </mat-step>
+            <mat-step label="Step 2">
+                    You will need a company code to access your provider data.
+                    <br> For trail accounts, please use
+                    <font color="red">guest</font> as company
+                    <mat-icon svgIcon="vpn"></mat-icon> code.
+            </mat-step>
+            <mat-step label="Step 3">
+                    <font color="red"> If you are an admin or company/provider</font>
+                    <br> Click below to signup for a
+                    <mat-icon svgIcon="new"></mat-icon>
+                    <mat-icon svgIcon="vpn"></mat-icon>.
+                    <br> Using A provider (Pro) Account, you can upload
+                    <mat-icon svgIcon="cloud">"</mat-icon> your own Content for your Organizaiton.
+            </mat-step>
+            <mat-step label="Step 4">
+                    <font color="red">
+                            <br>IMPORTANT
+                            <br> There is only ONE FREE Admin key per Company. That means, only one Admin can see "ALL" data
+                            and all other users will see "only their own data they created".</font>
+                    <br>
+                    <br> If you need more admin keys, please send an email to info@elishconsulting.com
+            </mat-step>
+    </mat-vertical-stepper>
+</div>
+<div *ngIf="helpType=='security'" class="primary">
+    <mat-icon svgIcon="security"></mat-icon>
+    <b>Help:</b> Security Rules
+    <br>
+    <br> ElishOne ERP Data implements very strict security data policy.
+    <br> At any give point of time, ElishOne ERP Data owner is alway the person who orginally signed up for Pro key.
+    <br><br>
+    Whenever, Pro Account owner changes the key, all other user access will immediatly be removed.
+    <br><br>
+    At any given time, Pro Account Owner can ask us to delete his organization data by simple emailing us at info@elishconsulting.com
+    <br><br>
+    <mat-vertical-stepper #stepper="matVerticalStepper">
+                    <mat-step>
+                        <ng-template matStepLabel></ng-template>
+                        <label class="middle-headline">Step 1: </label>Login with Google, Facebook or your email ID.
+                    </mat-step>
+                    <mat-step>
+                        <ng-template matStepLabel></ng-template>
+                            <label class="middle-headline">Step 2: </label> create a new a unique Company Name
+                            <mat-icon svgIcon="business"></mat-icon> and a secret key.
+                            <mat-icon svgIcon="new"></mat-icon> Pro
+                            <mat-icon svgIcon="vpn"></mat-icon>
+                    </mat-step>
+                    <mat-step>
+                        <p class="bodytext">
+                            <label class="middle-headline">Step 3: </label>share this orgname and key with your employees.
+                        </p>
+                        <span class="label-error">
+                            * share your
+                            < orgname and Secret key > with any person, and person will have access to all your data.
+                            <br><br> ** Only you can change your secret key (simple browse to settings<mat-icon svgIcon="account_circle"></mat-icon> page and write same orgname
+                                with a new key).
+                                <br><br> *** Changing secret key will remove access to all your existing users who are using your
+                                orgname and secret key.
+                                <br><br> **** If you change orgname, you will create a new org and will lose all data from last organization.
+                        </span>
+                    </mat-step>
+                    <mat-step>
+                        <p class="bodytext">
+                            <label class="middle-headline">Step 4: </label>Happy Tracking !!!
+                            <mat-icon svgIcon="place"></mat-icon>
+                            <br/>
+                            <img src="assets/img/tracker_2.png" width="424" height="126">
+                        </p>
+                    </mat-step>
+                </mat-vertical-stepper>
+</div>

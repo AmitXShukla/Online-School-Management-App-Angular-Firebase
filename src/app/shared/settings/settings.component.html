@@ -1,0 +1,79 @@
+<app-header-admin pageTitle="Settings" imageUrl="account_circle" helpType="settingspage"></app-header-admin>
+<mat-card *ngIf="!savedChanges else showSavedChangesCard">
+    <form #formData='ngForm'>
+      <mat-card-content>
+        <mat-card-title>
+          <span class="small-headline">Update Settings</span>
+        </mat-card-title>
+        <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
+        <mat-error *ngIf="error">Your Authentication is invalid. Error: {{ errorMessage }}</mat-error>
+        <mat-card-actions align="start">
+          <button type="button" (click)="onSubmit(formData.value);" [disabled]="!formData.valid" mat-raised-button color="primary">Update</button>
+          <button type="button" (click)="logout()" mat-raised-button color="primary">Logout</button>
+          <span *ngIf="(data$ | async)?.role == 'student'">
+            <button type="button" routerLink="/aboutus" mat-raised-button color="primary">Student</button>
+          </span>
+          <span *ngIf="(data$ | async)?.role == 'parent'">
+            <button type="button" routerLink="/aboutus" mat-raised-button color="primary">Parent</button>
+          </span>
+          <span *ngIf="(data$ | async)?.role == 'admin'">
+            <button type="button" routerLink="/student" mat-raised-button color="primary">Admin</button>
+          </span>
+          <span *ngIf="(data$ | async)?.role == 'staff'">
+            <button type="button" routerLink="/student" mat-raised-button color="primary">Staff</button>
+          </span>
+          <span *ngIf="(data$ | async)?.role == 'teacher'">
+            <button type="button" routerLink="/student" mat-raised-button color="primary">Teacher</button>
+          </span>
+        </mat-card-actions>
+        <mat-form-field class="example-form">
+          <input matInput placeholder="name" name="name" #name="ngModel" [ngModel]="(data$ | async)?.name" ngModel required minlength="5"
+            maxlength="30">
+        </mat-form-field>
+        <span *ngIf="name.invalid && (name.dirty || name.touched)">
+          <mat-error *ngIf="name.errors['required']">Name is Required.</mat-error>
+          <mat-error *ngIf="name.errors['minlength']">Name can't be less than 5 characters.</mat-error>
+          <mat-error *ngIf="name.errors['maxlength']">Name can't be more than 30 characters.</mat-error>
+        </span>
+        <br />
+        <mat-form-field class="example-form">
+          <input matInput placeholder="email" name="email" #email="ngModel" [ngModel]="(data$ | async)?.email" required email>
+        </mat-form-field>
+        <br />
+        <mat-error *ngIf="email.invalid && (email.dirty || email.touched)">Please enter a valid email.</mat-error>
+        <mat-form-field class="example-form">
+          <input matInput type="password" placeholder="phone #/passcode" name="phone" #phone="ngModel" [ngModel]="(data$ | async)?.phone" required maxlength="10">
+          <!-- pattern="^[a-z0-9_-]{8,15}$"-->
+        </mat-form-field>
+        <br />
+        <mat-form-field class="example-form">
+          <input matInput type="password" placeholder="Org Secret Key" name="secretKey" #secretKey="ngModel" [ngModel]="(data$ | async)?.secretKey"
+            required>
+        </mat-form-field>
+        <br />
+        <mat-form-field class="example-form">
+          <mat-select placeholder="Role" name="role" #role="ngModel" [ngModel]="(data$ | async)?.role" required>
+            <mat-option *ngFor="let role of roles" [value]="role.value">
+              {{role.viewValue}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+    </form>
+</mat-card>
+<ng-template #showSavedChangesCard>
+  <br>
+  <br>
+  <br>
+  <br>
+  <mat-error>
+    Your data is updated. Please click refresh if data is not updated.
+  </mat-error>
+  <br>
+  <br>
+  <br>
+  <br>
+  <mat-card-actions align="start">
+    <button type="button" (click)="savedChanges=false;routeLoginPage();" mat-raised-button color="primary">Close</button>
+  </mat-card-actions>
+</ng-template>

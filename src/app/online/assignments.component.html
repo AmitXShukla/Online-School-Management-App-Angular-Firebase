@@ -1,0 +1,232 @@
+<app-header-admin pageTitle="Assignment" imageUrl="book" helpType="salarypage"></app-header-admin>
+<mat-card [@fallIn]='state'>
+    <mat-card-content>
+        <div *ngIf="(toggleField=='searchMode') else (toggleField=='addMode')? showAddMode : ((toggleField=='editMode')? showEditMode : showResMode)">
+            <!-- searchmode -->
+            <form #searchFormData="ngForm" class="example-form">
+                <mat-card-actions align="start">
+                    <button type="button" (click)="toggle('resMode');getData(searchFormData.value);" mat-raised-button [disabled]="(code.value == '' && descr.value == '')"
+                        color="primary">Search</button>
+                    <span class="med-spacer"></span>
+                    <span matTooltip="Add New">
+                        <mat-icon color="primary" (click)="toggle('addMode')" svgIcon="add"></mat-icon>
+                    </span>
+                    <span class="small-spacer"></span>
+                    <span matTooltip="Show Recent Results">
+                        <mat-icon color="primary" (click)="toggle('resMode');getData();" svgIcon="cached"></mat-icon>
+                    </span>
+                </mat-card-actions>
+                <mat-form-field class="example-form">
+                    <input matInput type="text" placeholder="Assignment Code" id="code" name="code" #code="ngModel" ngModel [disabled]="descr.value !== ''">
+                </mat-form-field>
+                <br>
+                <mat-form-field class="example-form">
+                    <input matInput type="text" placeholder="Assignment Code Descr" id="descr" name="descr" #descr="ngModel" ngModel [disabled]="code.value !== ''">
+                </mat-form-field>
+            </form>
+        </div>
+    </mat-card-content>
+</mat-card>
+<!-- addMode -->
+<ng-template #showAddMode>
+    <form #addDataForm="ngForm" (ngSubmit)="setData(addDataForm.value);this.addDataForm.reset();" novalidate>
+        <mat-error *ngIf="savedChanges">
+            Your Assignment information is saved. To upload related documents, please use data table.
+            <label class="small-spacer"></label>
+            <mat-icon (click)="this.addDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+        </mat-error>
+        <div *ngIf="!savedChanges">
+            <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
+            <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>
+            <mat-card-actions align="start">
+                <button type="submit" mat-raised-button [disabled]="!addDataForm.valid" color="primary">Add</button>
+                <button type="reset" (click)="this.addDataForm.reset();" mat-raised-button [disabled]="!addDataForm.valid" color="primary">Clear</button>
+                <span class="med-spacer"></span>
+                <span matTooltip="Search">
+                    <mat-icon color="primary" (click)="toggle('searchMode')" svgIcon="search"></mat-icon>
+                </span>
+                <span class="small-spacer"></span>
+                <span matTooltip="Show Recent Results">
+                    <mat-icon color="primary" (click)="toggle('resMode');getData();" svgIcon="cached"></mat-icon>
+                </span>
+            </mat-card-actions>
+            <mat-form-field>
+                <input matInput placeholder="Assignment Code" name="code" id="code" #code="ngModel" ngModel required>
+                <mat-hint align="end">exm- S1G1AP1</mat-hint>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <br>
+                <input matInput placeholder="Assignment Code Descr" name="descr" id="descr" #descr="ngModel" ngModel required>
+                <mat-hint align="end">exm- Sem1-Grade 1A-Prelim1</mat-hint>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <mat-select placeholder="Enrollment Code" name="ENROLLMENT_CODE" id="ENROLLMENT_CODE" ngModel required>
+                    <mat-option *ngFor="let code of enrollmentCDs$" [value]="code._id">
+                        {{ code.code }} - {{ code.descr }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <textarea matInput placeholder="Comments" name="comments" id="comments" ngModel></textarea>
+            </mat-form-field>
+        </div>
+    </form>
+</ng-template>
+<!-- edit mode -->
+<ng-template #showEditMode>
+    <form #editDataForm="ngForm" (ngSubmit)="updateData(editDataForm.value);" novalidate>
+        <input type="hidden" name="_id" id="_id" required [ngModel]="(data$ | async)?._id">
+        <mat-error *ngIf="savedChanges">
+            Data is saved.
+            <label class="small-spacer"></label>
+            <mat-icon (click)="this.editDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+        </mat-error>
+        <div *ngIf="!savedChanges">
+            <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
+            <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>
+            <mat-card-actions align="start">
+                <button type="submit" mat-raised-button [disabled]="!this.editDataForm.valid || this.editDataForm.pristine" color="primary">Update</button>
+                <span class="med-spacer"></span>
+                <span matTooltip="Search">
+                    <mat-icon color="primary" (click)="toggle('searchMode')" svgIcon="search"></mat-icon>
+                </span>
+                <span class="small-spacer"></span>
+                <span matTooltip="Shwo Recent Results">
+                    <mat-icon color="primary" (click)="toggle('resMode');getData();" svgIcon="cached"></mat-icon>
+                </span>
+            </mat-card-actions>
+            <mat-form-field>
+                <input matInput placeholder="Assignment Code" name="code" id="code" [ngModel]="(data$ | async)?.code" required>
+                <mat-hint align="end">exm- S1G1AP1</mat-hint>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <input matInput placeholder="Assignment Code Descr" name="descr" id="descr" [ngModel]="(data$ | async)?.descr" required>
+                <mat-hint align="end">exm- Sem1-Grade 1A-Prelim1</mat-hint>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <mat-select placeholder="Enrollment Code" name="ENROLLMENT_CODE" id="ENROLLMENT_CODE" [ngModel]="(data$ | async)?.ENROLLMENT_CODE"
+                    required>
+                    <mat-option *ngFor="let code of enrollmentCDs$" [value]="code._id">
+                        {{ code.code }} - {{ code.descr }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <textarea matInput placeholder="Comments" name="comments" id="comments" [ngModel]="(data$ | async)?.comments"></textarea>
+            </mat-form-field>
+            <br>
+                <div *ngFor="let file of (data$ | async)?.files">
+                    <br/>
+                    <button type="button" mat-raised-button (click)="showDocument=!showDocument; getDocUrl(file);" color="primary">Show Document</button>
+                </div>
+            <div *ngIf="showDocument">
+                <span matTooltip="Close">
+                    <mat-icon color="primary" (click)="showDocument = !showDocument;">clear
+                    </mat-icon>
+                </span>
+                <br/>
+                <a href="{{ docUrl | async }}" target="_blank">Click here to open {{ fileName }} document</a>
+            </div>
+            <br>
+            <div *ngIf="showFileUpload">
+                <span matTooltip="Close">
+                    <mat-icon color="primary" (click)="showFileUpload = !showFileUpload;">clear
+                    </mat-icon>
+                </span>
+                <br/>
+                <app-fileupload fileUrl="ASSIGNMENT" docId="{{docId}}"></app-fileupload>
+            </div>
+            <br>
+            <button type="button" mat-raised-button (click)="showFileUpload=!showFileUpload" color="primary">Upload File</button>
+        </div>
+    </form>
+</ng-template>
+<!-- Results mode -->
+<ng-template #showResMode>
+    <mat-card-actions align="start">
+        <span class="med-spacer"></span>
+        <span class="med-spacer"></span>
+        <span class="med-spacer"></span>
+        <span matTooltip="Add New">
+            <mat-icon color="primary" (click)="toggle('addMode')" svgIcon="add"></mat-icon>
+        </span>
+        <span class="small-spacer"></span>
+        <span matTooltip="Search All">
+            <mat-icon color="primary" (click)="toggle('searchMode')" svgIcon="search"></mat-icon>
+        </span>
+    </mat-card-actions>
+    <br/>
+    <div class="example-header">
+        <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search Recent Results">
+        </mat-form-field>
+    </div>
+    <div class="example-container mat-elevation-z8">
+        <mat-table [dataSource]="dataSource" matSort>
+            <ng-container matColumnDef="code">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Assignment Code</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="descr">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Descr</mat-header-cell>
+                <mat-cell *matCellDef="let row"> {{row.descr}} </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="_id">
+                <mat-header-cell *matHeaderCellDef> action </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span matTooltip="Edit">
+                        <button mat-icon-button (click)="getDoc(row._id)">
+                            <mat-icon color="primary" svgIcon="edit"></mat-icon>
+                        </button>
+                    </span>
+                    <span matTooltip="Delete">
+                        <button mat-icon-button (click)="deleteDoc(row._id)">
+                            <mat-icon color="primary" svgIcon="delete"></mat-icon>
+                        </button>
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <ng-container matColumnDef="path">
+                <mat-header-cell *matHeaderCellDef> File Upload </mat-header-cell>
+                <mat-cell *matCellDef="let row">
+                    <span matTooltip="Show document">
+                        <button mat-icon-button (click)="this.showPic(row.path);">
+                            <mat-icon color="primary">photo_camera</mat-icon>
+                        </button>
+                    </span>
+                </mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+</ng-template>
+<ng-template #showMyPic>
+    <span class="med-spacer"></span>
+    <span class="med-spacer"></span>
+    <span matTooltip="Close">
+        <mat-icon color="primary" (click)="toggle('myLocMode');">clear</mat-icon>
+    </span>
+    <div *ngIf="path == 'NA' else MyPic">
+        <br>
+        <br>
+        <span class="label-error">No Document available.
+            <mat-icon>camera_roll</mat-icon>
+        </span>
+    </div>
+</ng-template>
+<ng-template #MyPic>
+    <br>
+    <br>
+    <img [src]="path" width="300" height="300">
+    <br>
+</ng-template>

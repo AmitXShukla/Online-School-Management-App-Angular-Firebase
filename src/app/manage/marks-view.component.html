@@ -1,0 +1,125 @@
+<app-header-admin pageTitle="Marks Register" imageUrl="business" helpType="salarypage"></app-header-admin>
+<mat-card [@fallIn]='state'>
+  <mat-card-content>
+    <div *ngIf="(toggleField=='searchMode') else (toggleField=='addMode')? showAddMode : ((toggleField=='editMode')? showEditMode : showResMode)">
+      <!-- no Search mode in view page -->
+    </div>
+  </mat-card-content>
+</mat-card>
+<!-- addMode -->
+<ng-template #showAddMode>
+  <!-- No Add mode in view page -->
+</ng-template>
+<!-- edit mode -->
+<ng-template #showEditMode>
+  <form [formGroup]="editDataForm" novalidate>
+    <input type="hidden" formControlName="_id" required>
+    <div *ngIf="!savedChanges">
+      <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
+      <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>
+      <mat-card-actions align="start">
+        <span matTooltip="Shwo Recent Results">
+          <mat-icon color="primary" (click)="toggle('resMode');getData();" svgIcon="cached"></mat-icon>
+        </span>
+      </mat-card-actions>
+      <input type="hidden" formControlName="studentdocid" required>
+      <input type="hidden" formControlName="studentcode" required>
+      <input type="hidden" formControlName="studentdescr" required>
+      <input type="hidden" formControlName="studentLAST_NAME" required>
+      <input type="hidden" formControlName="studentfeecd" required>
+      <b>Student ID: </b> {{ this.editDataForm.value.studentcode }}
+      <b>Name: </b> {{this.editDataForm.value.studentdescr}} {{this.editDataForm.value.studentLAST_NAME}}
+      <br/>
+      <br/>
+      <mat-form-field>
+        <input matInput readonly="" placeholder="Paid Date" type="date" formControlName="paiddate" required>
+      </mat-form-field>
+      <br/>
+      <mat-divider></mat-divider>
+      <br>
+      <mat-form-field>
+        <input matInput readonly="" placeholder="Marks Code" formControlName="code" required>
+        <mat-hint align="end">exm- S1G1AP1</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput readonly="" placeholder="Marks Code Descr" formControlName="descr" required>
+        <mat-hint align="end">exm- Sem1-Grade 1A-Prelim1</mat-hint>
+      </mat-form-field>
+      <mat-divider></mat-divider>
+      <br>
+      <br>
+      <div formArrayName="line">
+        <div *ngFor="let item of this.editDataForm.get('line').controls; let pointIndex=index" [formGroupName]="pointIndex">
+          <mat-form-field>
+            <input matInput readonly="" placeholder="Subject" formControlName="subject" required>
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput readonly="" placeholder="Min. Marks" formControlName="minmarks" required pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput readonly="" placeholder="Max. Marks" formControlName="maxmarks" required pattern="^\d*\.?\d+$">
+          </mat-form-field>
+          <mat-form-field>
+            <input matInput readonly="" placeholder="Marks" (keyup)="calculateTotal('editDataForm')" formControlName="marks" required pattern="^\d*\.?\d+$">
+          </mat-form-field>
+        </div>
+      </div>
+      <br>
+      <mat-form-field>
+        <input matInput readonly="" readonly="" placeholder="Gross Total" formControlName="gamount" pattern="^\d*\.?\d+$">
+      </mat-form-field>
+
+    </div>
+  </form>
+</ng-template>
+<!-- Results mode -->
+<ng-template #showResMode>
+  <div class="example-header">
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search Recent Results">
+    </mat-form-field>
+  </div>
+  <div class="example-container mat-elevation-z8">
+    <mat-table [dataSource]="dataSource" matSort>
+      <ng-container matColumnDef="code">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Marks Code</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.code}} </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="descr">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Descr</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.descr}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="studentcode">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Id</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.studentcode}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="studentdescr">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>First Name</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.studentdescr}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="studentLAST_NAME">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Last Name</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.studentLAST_NAME}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="paiddate">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
+        <mat-cell *matCellDef="let row"> {{row.paiddate}} </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="_id">
+        <mat-header-cell *matHeaderCellDef> action </mat-header-cell>
+        <mat-cell *matCellDef="let row">
+          <span matTooltip="Edit">
+            <button mat-icon-button (click)="getDoc(row._id)">
+              <mat-icon color="primary">zoom_in</mat-icon>
+            </button>
+          </span>
+        </mat-cell>
+      </ng-container>
+
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+    <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  </div>
+</ng-template>

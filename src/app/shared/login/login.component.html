@@ -1,0 +1,63 @@
+<app-header-admin pageTitle="Login" imageUrl="dashboard" helpType="homepage"></app-header-admin>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>
+      <mat-icon>dashboard</mat-icon>Amit.LA</mat-card-title>
+    <mat-card-subtitle>School Management App</mat-card-subtitle>
+  </mat-card-header>
+  <div *ngIf="afAuth.user | async as user; else showLogin">
+    Welcome {{ user.displayName }} !!!
+    <span class="small-spacer"></span>
+    <img src="{{ user.photoURL }}" *ngIf="user.photoURL" width="50px" height="50px">
+    <br/><br/>
+    <button type="button" (click)="logout()" mat-raised-button color="primary">Logout</button>
+    <br/><br/>
+    <button type="button" routerLink="/settings" mat-raised-button color="primary">Update Profile</button>
+  </div>
+  <ng-template #showLogin>
+  <mat-card-content>
+    <mat-divider></mat-divider>
+    <form #formData="ngForm" (ngSubmit)="login('email',formData.value)"  class="example-form">
+        <mat-card-actions *ngIf="error">
+          <mat-error>Login credentials are not verified. Here is the error: {{ error }}</mat-error>
+        </mat-card-actions>
+        <mat-error *ngIf="dataLoading">
+          <mat-progress-spinner mode="indeterminate" [attr.color]="primary" [value]="15"></mat-progress-spinner>
+        </mat-error>
+        <mat-error *ngIf="brokenNetwork" class="label-error">Network Connection Error.</mat-error>
+        <mat-card-actions align="start">
+          <button type="submit" [disabled]="!formData.valid" mat-raised-button color="primary">Log in</button>
+        </mat-card-actions>
+        <mat-form-field class="example-full-width">
+          <input matInput placeholder="email" name="email" #email="ngModel" ngModel required email>
+        </mat-form-field>
+        <mat-error *ngIf="email.invalid && (email.dirty || email.touched)">Please enter a valid email.</mat-error>
+        <mat-form-field class="example-full-width">
+          <input matInput type="password" placeholder="app password" name="password" #password="ngModel" ngModel required
+            minlength="5" maxlength="30">
+        </mat-form-field>
+        <span *ngIf="password.invalid && (password.dirty || password.touched)">
+          <mat-error *ngIf="password.errors['required']">Password is Required.</mat-error>
+          <mat-error *ngIf="password.errors['minlength']">Password can't be less than 5 characters.</mat-error>
+          <mat-error *ngIf="password.errors['maxlength']">Password can't be more than 30 characters.</mat-error>
+        </span>
+      </form>
+  </mat-card-content>
+  <mat-card-content *ngIf="socialAuth">
+    <mat-chip-list class="mat-chip-list-stacked" style="margin-left: 170px;">
+      <mat-chip color="primary" selected="true" (click)="login('FB')">
+        Login With Facebook
+      </mat-chip>
+      <mat-chip color="warn" selected="true" (click)="login('GOOGLE')">
+        Login With Google
+      </mat-chip>
+    </mat-chip-list>
+  </mat-card-content>
+  <mat-card-actions>
+    <mat-divider></mat-divider>
+    <button mat-button routerLink="/signup" class="small-headline">No account?
+        <strong>Create one with your email here</strong>
+    </button>
+  </mat-card-actions>
+  </ng-template>
+</mat-card>
