@@ -29,8 +29,8 @@ export class HeaderAdminComponent implements OnInit {
     this.configData = this._backendService.getConfig();
     if(window.localStorage.getItem("role")) {
       this.userRole = window.localStorage.getItem("role");
+      this.getMsgCounts();
     }
-    this.getMsgCounts();
   }
 
   getMsgCounts(){
