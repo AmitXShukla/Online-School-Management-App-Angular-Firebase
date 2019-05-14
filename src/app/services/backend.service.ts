@@ -85,10 +85,12 @@ export class BackendService {
    //.pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT')/res[0]['_id']/notifications, ref => ref.where('studentdocid', '==', res[0]['_id'])).valueChanges()))));
   }
   getUserStudentMSGCounts() {
+    if(this.afAuth.auth.currentUser != null) {
     return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT'), ref => ref.where('SKEY', '==', res['phone'])).valueChanges()
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT')+'/'+res[0]['_id']+'/notifications', ref => ref.where('readReceipt', '==', true)).valueChanges()))));
    //.pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT')/res[0]['_id']/notifications, ref => ref.where('studentdocid', '==', res[0]['_id'])).valueChanges()))));
+    } else return false;
   }
   getUserStudentFeeDoc() {
     return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
