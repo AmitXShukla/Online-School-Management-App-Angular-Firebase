@@ -31,10 +31,11 @@ export class LoginComponent implements OnInit, AfterViewInit {
     }
   }
   login(loginType, formData?) {
-    this._backendService.login(loginType, formData).catch(
-      (err) => {
-        this.error = err;
-      });
+    // this._backendService.login(loginType, formData).catch(
+    //   (err) => {
+    //     this.error = err;
+    //   });
+    this._backendService.login(loginType, formData);
   }
   logout() {
     this._backendService.logout()

@@ -1,7 +1,8 @@
 <h2>Online School Management App</h2>
 <h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHnfxOOzZ_hTnPF8Hh3eKDo">Video Tutorials!</a></h2>
+<h2>This repository is updated to Angular 9.0</h2>
 <h2>Tools: </h2>
-<b>front-end:</b> Angular 7.2.14 & 8.0.0 rc.0<br/>
+<b>front-end:</b> Angular 9.0.0<br/>
 <b>back-end:</b> Google Firestore / Firebase<br/>
 Pro Version: AI, Machine Learning Algorithm supported Advance features<br/>
 <h2>Objective</h2>
