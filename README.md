@@ -1,3 +1,4 @@
+# Please give a Star * to this repository if you like this project.
 <h2>Online School Management App</h2>
 <h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHnfxOOzZ_hTnPF8Hh3eKDo">Video Tutorials!</a></h2>
 <h2>This repository is updated to Angular 9.0</h2>
