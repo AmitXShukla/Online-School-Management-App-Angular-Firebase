@@ -100,7 +100,7 @@
             <input matInput placeholder="Vendor Name" formControlName="VENDOR">
           </mat-form-field>
           <div formArrayName="ADDRESS">
-            <div *ngFor="let item of ADDRESSES('addDataForm').controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div *ngFor="let item of ADDRESSES('addDataForm')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
               <br>
               <mat-form-field>
                 <input matInput placeholder="Address Type" formControlName="ADD_TYPE">
@@ -127,7 +127,7 @@
           </div>
           <mat-divider></mat-divider>
           <div formArrayName="PHONE">
-            <div *ngFor="let item of PHONES('addDataForm').controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div *ngFor="let item of PHONES('addDataForm')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
               <br>
               <mat-form-field>
                 <input matInput placeholder="Phone Type" formControlName="PHONE_TYPE">
@@ -141,7 +141,7 @@
           </div>
           <mat-divider></mat-divider>
           <div formArrayName="EMAILID">
-            <div *ngFor="let item of EMAILIDS('addDataForm').controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div *ngFor="let item of EMAILIDS('addDataForm')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
               <br>
               <mat-form-field>
                 <input matInput placeholder="Email Type" formControlName="EMAIL_TYPE">
@@ -190,7 +190,7 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
           <div formArrayName="LINE">
-            <div *ngFor="let item of LINES('addDataForm').controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div *ngFor="let item of LINES('addDataForm')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
               <br>
               <mat-form-field>
                 <input matInput placeholder="Line #/Code" formControlName="LINE_NUM" required>
@@ -342,7 +342,7 @@
             <input matInput placeholder="Vendor Name" formControlName="VENDOR">
           </mat-form-field>
           <div formArrayName="ADDRESS">
-            <div *ngFor="let item of editDataForm.get('ADDRESS').controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div *ngFor="let item of editDataForm.get('ADDRESS')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
               <br>
               <mat-form-field>
                 <input matInput placeholder="Address Type" formControlName="ADD_TYPE">
@@ -369,7 +369,7 @@
           </div>
           <mat-divider></mat-divider>
           <div formArrayName="PHONE">
-            <div *ngFor="let item of editDataForm.get('PHONE').controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div *ngFor="let item of editDataForm.get('PHONE')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
               <br>
               <mat-form-field>
                 <input matInput placeholder="Phone Type" formControlName="PHONE_TYPE">
@@ -383,7 +383,7 @@
           </div>
           <mat-divider></mat-divider>
           <div formArrayName="EMAILID">
-            <div *ngFor="let item of editDataForm.get('EMAILID').controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div *ngFor="let item of editDataForm.get('EMAILID')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
               <br>
               <mat-form-field>
                 <input matInput placeholder="Email Type" formControlName="EMAIL_TYPE">
@@ -432,7 +432,7 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
           <div formArrayName="LINE">
-            <div *ngFor="let item of editDataForm.get('LINE').controls; let pointIndex=index" [formGroupName]="pointIndex">
+            <div *ngFor="let item of editDataForm.get('LINE')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
               <br>
               <mat-form-field>
                 <input matInput placeholder="Line #/Code" formControlName="LINE_NUM" required>

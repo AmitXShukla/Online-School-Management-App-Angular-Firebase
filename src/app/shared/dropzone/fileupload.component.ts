@@ -18,6 +18,7 @@ export class FileUploadComponent {
     downloadURL: Observable<string>;
     isHovering: boolean;
     error: boolean = false;
+    errorMessage: string = "";
 
     constructor(private _storage: AngularFireStorage, private _backendService: BackendService) { }
 
@@ -29,7 +30,8 @@ export class FileUploadComponent {
         const file = event.target.files[0];
         const filePath = this.fileUrl + '/' + event.target.files[0].name + '_' + new Date().getTime();
         const fileRef = this._storage.ref(filePath);
-        const task = this._storage.upload(filePath, file);
+        // const task = this._storage.upload(filePath, file);
+        const task = fileRef.put(file);
         // observe percentage changes
         this.percentage = task.percentageChanges();
         // get notified when the download URL is available

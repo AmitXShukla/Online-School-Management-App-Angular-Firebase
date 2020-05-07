@@ -74,7 +74,7 @@
       <mat-divider></mat-divider>
       <br><br>
       <div formArrayName="line">
-        <div *ngFor="let item of addDataForm.get('line').controls; let pointIndex=index" [formGroupName]="pointIndex">
+        <div *ngFor="let item of addDataForm.get('line')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
           <mat-form-field>
             <mat-select placeholder="Pay Frequency" formControlName="frequency" required>
               <mat-option *ngFor="let CD of freqCDs" [value]="CD">
@@ -154,7 +154,7 @@
       <mat-divider></mat-divider>
       <br><br>
       <div formArrayName="line">
-        <div *ngFor="let item of this.editDataForm.get('line').controls; let pointIndex=index" [formGroupName]="pointIndex">
+        <div *ngFor="let item of this.editDataForm.get('line')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
           <mat-form-field>
             <mat-select placeholder="Pay Frequency" formControlName="frequency" required>
               <mat-option *ngFor="let CD of freqCDs" [value]="CD">

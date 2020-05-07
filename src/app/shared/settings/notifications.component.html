@@ -4,7 +4,8 @@
     <mat-error *ngIf="savedChanges">
       Data is saved.
       <label class="small-spacer"></label>
-      <mat-icon (click)="this.editDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+      <!-- <mat-icon (click)="this.editDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon> -->
+      <mat-icon (click)="savedChanges=false;" svgIcon="clear"></mat-icon>
     </mat-error>
     <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
     <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>

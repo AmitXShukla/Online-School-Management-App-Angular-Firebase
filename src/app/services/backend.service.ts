@@ -13,8 +13,13 @@ import { firestore } from 'firebase/app';
   providedIn: 'root'
 })
 export class BackendService {
+  authState: any = null;
 
-  constructor(public afAuth: AngularFireAuth, private _afs: AngularFirestore, private _http: HttpClient, private _storage: AngularFireStorage) { }
+  constructor(public afAuth: AngularFireAuth, private _afs: AngularFirestore, private _http: HttpClient, private _storage: AngularFireStorage) { 
+    this.afAuth.authState.subscribe(authState => {
+      this.authState = authState;
+    })
+  }
 
   getConfig() {
     return environment.social;
@@ -31,13 +36,13 @@ export class BackendService {
   // login page funcitons - login with FB/GOOGLE/EMAIL, if formData is passed, this means is user is using email/password login
   login(loginType, formData?) {
     if (formData) {
-      return this.afAuth.auth.signInWithEmailAndPassword(formData.email, formData.password);
+      return this.afAuth.signInWithEmailAndPassword(formData.email, formData.password);
     } else {
       let loginMethod;
       if (loginType === 'FB') { loginMethod = new auth.FacebookAuthProvider(); }
       if (loginType === 'GOOGLE') { loginMethod = new auth.GoogleAuthProvider(); }
 
-      return this.afAuth.auth.signInWithRedirect(loginMethod);
+      return this.afAuth.signInWithRedirect(loginMethod);
     }
   }
   logout() {
@@ -47,16 +52,16 @@ export class BackendService {
     window.localStorage.removeItem("picture");
     window.localStorage.removeItem("token");
     window.localStorage.removeItem("role");
-    return this.afAuth.auth.signOut();
+    return this.afAuth.signOut();
   }
 
   // method to retreive firebase auth after login redirect
   redirectLogin() {
-    return this.afAuth.auth.getRedirectResult();
+    return this.afAuth.getRedirectResult();
   }
   createUser(formData) {
     if (environment.database === 'firebase') {
-      return this.afAuth.auth.createUserWithEmailAndPassword(formData.value.email, formData.value.password);
+      return this.afAuth.createUserWithEmailAndPassword(formData.value.email, formData.value.password);
     }
     if (environment.database === 'SQL') {
       // need to call SQL API here if a SQL Database is used
@@ -68,42 +73,50 @@ export class BackendService {
 
   // setting page functions
   updateUser(formData): Promise<any> {
-    return this.setDoc('USERS', formData, this.afAuth.auth.currentUser.uid);
+    // return this.setDoc('USERS', formData, this.afAuth.currentUser.uid);
+    return this.setDoc('USERS', formData, this.authState.uid);
   }
   getUserDoc() {
-    return this.getDoc('USERS', this.afAuth.auth.currentUser.uid);
+    // return this.getDoc('USERS', this.afAuth.auth.currentUser.uid);
+    return this.getDoc('USERS', this.authState.uid);
   }
   getUserStudentDoc() {
-    return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    // return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    return this.getDoc('USERS', this.authState.uid)
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT'), ref => ref.where('SKEY', '==', res['phone'])).valueChanges()
   ));
   }
   getUserStudentMSGDoc() {
-    return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    // return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    return this.getDoc('USERS', this.authState.uid)
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT'), ref => ref.where('SKEY', '==', res['phone'])).valueChanges()
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT')+'/'+res[0]['_id']+'/notifications').valueChanges()))));
    //.pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT')/res[0]['_id']/notifications, ref => ref.where('studentdocid', '==', res[0]['_id'])).valueChanges()))));
   }
   getUserStudentMSGCounts() {
-    if(this.afAuth.auth.currentUser != null) {
-    return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    if(this.afAuth.currentUser != null) {
+    // return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    return this.getDoc('USERS', this.authState.uid)
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT'), ref => ref.where('SKEY', '==', res['phone'])).valueChanges()
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT')+'/'+res[0]['_id']+'/notifications', ref => ref.where('readReceipt', '==', true)).valueChanges()))));
    //.pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT')/res[0]['_id']/notifications, ref => ref.where('studentdocid', '==', res[0]['_id'])).valueChanges()))));
     } else return false;
   }
   getUserStudentFeeDoc() {
-    return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    // return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    return this.getDoc('USERS', this.authState.uid)
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT'), ref => ref.where('SKEY', '==', res['phone'])).valueChanges()
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('FEE'), ref => ref.where('studentdocid', '==', res[0]['_id'])).valueChanges()))));
   }
   getUserStudentMarksDoc() {
-    return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    // return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    return this.getDoc('USERS', this.authState.uid)
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT'), ref => ref.where('SKEY', '==', res['phone'])).valueChanges()
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('MARKS'), ref => ref.where('studentdocid', '==', res[0]['_id'])).valueChanges()))));
   }
   getUserStudentTutsDoc(_url) {
-    return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    // return this.getDoc('USERS', this.afAuth.auth.currentUser.uid)
+    return this.getDoc('USERS', this.authState.uid)
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls('STUDENT'), ref => ref.where('SKEY', '==', res['phone'])).valueChanges()
    .pipe(switchMap(res => this._afs.collection(this.getCollUrls(_url), ref => ref.where('ENROLLMENT_CODE', '==', res[0]['ENROLLMENT_CODE'])).valueChanges()))));
   }
@@ -145,9 +158,13 @@ export class BackendService {
       _id: id,
       updatedAt: timestamp,
       createdAt: timestamp,
-      username: this.afAuth.auth.currentUser.displayName,
-      useremail: this.afAuth.auth.currentUser.email,
-      author: this.afAuth.auth.currentUser.uid
+      // username: this.afAuth.auth.currentUser.displayName,
+      // useremail: this.afAuth.auth.currentUser.email,
+      // author: this.afAuth.auth.currentUser.uid
+      // username: this.authState.currentUser.displayName,
+      username: this.authState.displayName,
+      useremail: this.authState.email,
+      author: this.authState.uid
     }).then((res) => { return true });
   }
   updateDoc(coll: string, docId: string, data: any) {
@@ -156,9 +173,12 @@ export class BackendService {
     return docRef.update({
       ...data,
       updatedAt: timestamp,
-      username: this.afAuth.auth.currentUser.displayName,
-      useremail: this.afAuth.auth.currentUser.email,
-      author: this.afAuth.auth.currentUser.uid
+      // username: this.afAuth.auth.currentUser.displayName,
+      // useremail: this.afAuth.auth.currentUser.email,
+      // author: this.afAuth.auth.currentUser.uid
+      username: this.authState.displayName,
+      useremail: this.authState.email,
+      author: this.authState.uid
     }).then((res) => { return true });
   }
   updateFileUpload(coll: string, docId: string, filePath: string) {
@@ -167,9 +187,12 @@ export class BackendService {
     return docRef.update({
       files: firestore.FieldValue.arrayUnion(filePath),
       updatedAt: timestamp,
-      username: this.afAuth.auth.currentUser.displayName,
-      useremail: this.afAuth.auth.currentUser.email,
-      author: this.afAuth.auth.currentUser.uid
+      // username: this.afAuth.auth.currentUser.displayName,
+      // useremail: this.afAuth.auth.currentUser.email,
+      // author: this.afAuth.auth.currentUser.uid
+      username: this.authState.displayName,
+      useremail: this.authState.email,
+      author: this.authState.uid
     });
   }
   getFileDownloadUrl(url) {

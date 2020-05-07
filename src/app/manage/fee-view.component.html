@@ -13,7 +13,8 @@
 </ng-template>
 <!-- edit mode -->
 <ng-template #showEditMode>
-  <form [formGroup]="editDataForm" (ngSubmit)="updateData(editDataForm.value);" novalidate>
+  <!-- <form [formGroup]="editDataForm" (ngSubmit)="updateData(editDataForm.value);" novalidate> -->
+      <form [formGroup]="editDataForm" novalidate>
     <input type="hidden" formControlName="_id" required>
 
     <div *ngIf="!savedChanges">
@@ -53,7 +54,7 @@
       <br>
       <br>
       <div formArrayName="line">
-        <div *ngFor="let item of this.editDataForm.get('line').controls; let pointIndex=index" [formGroupName]="pointIndex">
+        <div *ngFor="let item of this.editDataForm.get('line')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
           <mat-form-field>
             <mat-select placeholder="Pay Frequency" formControlName="frequency" required>
               <mat-option *ngFor="let CD of freqCDs" [value]="CD">

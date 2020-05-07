@@ -12,9 +12,10 @@
       <mat-card-actions align="start" *ngIf="error">
         <mat-error>User ID is already taken.</mat-error>
       </mat-card-actions>
-      <div *ngIf="dataLoading">
+      <!-- <div *ngIf="dataLoading">
         <mat-progress-spinner mode="indeterminate" [attr.color]="primary" [value]="15"></mat-progress-spinner>
-      </div>
+      </div> -->
+      <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
       <div *ngIf="brokenNetwork" class="label-error">Network connection error.</div>
       <mat-card-actions align="start">
         <button type="submit" [disabled]="!formData.valid" mat-raised-button color="primary">Sign up</button>

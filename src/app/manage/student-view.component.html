@@ -1,12 +1,14 @@
 <app-header-admin pageTitle="Profile" imageUrl="star" helpType="settingspage"></app-header-admin>
 <mat-card [@fallIn]='state'>
   <mat-card-content>
-      <form #editDataForm="ngForm" (ngSubmit)="updateData(editDataForm.value);" novalidate>
+      <!-- <form #editDataForm="ngForm" (ngSubmit)="updateData(editDataForm.value);" novalidate> -->
+          <form #editDataForm="ngForm" novalidate>
         <!--<input type="hidden" name="_id" id="_id" [ngModel]="data['_id']" required>-->
         <mat-error *ngIf="savedChanges">
           Data is saved.
           <label class="small-spacer"></label>
-          <mat-icon (click)="this.editDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon>
+          <!-- <mat-icon (click)="this.editDataForm.reset();savedChanges=false;toggle('searchMode');" svgIcon="clear"></mat-icon> -->
+          <mat-icon (click)="savedChanges=false;" svgIcon="clear"></mat-icon>
         </mat-error>
         <mat-progress-bar mode="indeterminate" *ngIf="dataLoading"></mat-progress-bar>
         <mat-error *ngIf="error">Error: {{ errorMessage }}</mat-error>

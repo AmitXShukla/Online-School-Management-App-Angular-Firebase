@@ -194,7 +194,7 @@
                     </span>
                 </mat-cell>
             </ng-container>
-            <ng-container matColumnDef="path">
+            <!-- <ng-container matColumnDef="path">
                 <mat-header-cell *matHeaderCellDef> File Upload </mat-header-cell>
                 <mat-cell *matCellDef="let row">
                     <span matTooltip="Show document">
@@ -203,14 +203,14 @@
                         </button>
                     </span>
                 </mat-cell>
-            </ng-container>
+            </ng-container> -->
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
         </mat-table>
         <mat-paginator #paginator [length]="dataSource.filteredData.length" [pageIndex]="0" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
     </div>
 </ng-template>
-<ng-template #showMyPic>
+<!-- <ng-template #showMyPic>
     <span class="med-spacer"></span>
     <span class="med-spacer"></span>
     <span matTooltip="Close">
@@ -229,4 +229,4 @@
     <br>
     <img [src]="path" width="300" height="300">
     <br>
-</ng-template>
+</ng-template> -->
