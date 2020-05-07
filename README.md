@@ -61,6 +61,8 @@ $ ng serve
 <h2> Setup Google Firestore / Firebase Database & Role / Rules</h2>
 
 ```ts
+service cloud.firestore {
+  match /databases/{database}/documents {
 // SMS App Rules START
   match /SMS_ROLES/{document} {
    allow read, write: if false;
@@ -156,5 +158,6 @@ $ ng serve
           return request.auth.uid != null;
     }
   // SMS App Rules END
-
+}
+}
 ```
