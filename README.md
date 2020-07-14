@@ -1,7 +1,6 @@
 ```diff
-+ Please consider
-- following me & a generous STAR * to this repository
-+ if you like this project.
++ if you like this project, Please consider,
+- following me on GitHub & a generous STAR * to this repository.
 ```
 <h2>Online School Management App</h2>
 <h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHnfxOOzZ_hTnPF8Hh3eKDo">Video Tutorials!</a></h2>
