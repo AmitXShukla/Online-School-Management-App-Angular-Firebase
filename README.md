@@ -7,7 +7,7 @@
 [<img src="https://github.com/AmitXShukla/AmitXShukla.github.io/blob/master/assets/icons/twitter_1.svg" width=40 height=50>](https://twitter.com/ashuklax)
 
 <h2>Online School Management App</h2>
-<h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHnfxOOzZ_hTnPF8Hh3eKDo">Video Tutorials!</a></h2>
+<h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHnfxOOzZ_hTnPF8Hh3eKDo">Please watch Video Tutorials for complete installation and code review!</a></h2>
 <h2>This repository is updated to Angular 9.1.4</h2>
 <h2>Tools: </h2>
 <b>front-end:</b> Angular 9.1.4<br/>
