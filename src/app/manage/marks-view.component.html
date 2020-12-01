@@ -49,7 +49,7 @@
       <br>
       <br>
       <div formArrayName="line">
-        <div *ngFor="let item of this.editDataForm.get('line')?.controls; let pointIndex=index" [formGroupName]="pointIndex">
+        <div *ngFor="let item of this.editDataForm.get('line')['controls']; let pointIndex=index" [formGroupName]="pointIndex">
           <mat-form-field>
             <input matInput readonly="" placeholder="Subject" formControlName="subject" required>
           </mat-form-field>
@@ -76,7 +76,7 @@
 <ng-template #showResMode>
   <div class="example-header">
     <mat-form-field>
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Search Recent Results">
+      <input matInput (keyup)="applyFilter($event)" placeholder="Search Recent Results">
     </mat-form-field>
   </div>
   <div class="example-container mat-elevation-z8">

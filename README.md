@@ -8,9 +8,11 @@
 
 <h2>Online School Management App</h2>
 <h2><a href="https://www.youtube.com/playlist?list=PLp0TENYyY8lHnfxOOzZ_hTnPF8Hh3eKDo">Please watch Video Tutorials for complete installation and code review!</a></h2>
-<h2>This repository is updated to Angular 9.1.4</h2>
+<h2>This repository is updated to Angular 11.0.0</h2>
+Please don't forget to upgrade your Angular CLI to V11 and update tsconfig.json as well.
+
 <h2>Tools: </h2>
-<b>front-end:</b> Angular 9.1.4<br/>
+<b>front-end:</b> Angular 11.0.0<br/>
 <b>back-end:</b> Google Firestore / Firebase<br/>
 Pro Version: AI, Machine Learning Algorithm supported Advance features<br/>
 <h3><i>send an email to info@elishconsulting.com for Pro version enquiries.</i></h3>

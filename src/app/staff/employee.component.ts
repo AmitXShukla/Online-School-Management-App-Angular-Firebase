@@ -20,7 +20,7 @@ export class EmployeeComponent implements OnInit, OnDestroy {
   members: any[];
   dataSource: MatTableDataSource<any>;
   myDocData;
-  data$;
+  data$: Observable<any>;
   toggleField: string;
   state: string = '';
   savedChanges = false;
@@ -169,12 +169,19 @@ export class EmployeeComponent implements OnInit, OnDestroy {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
 
-  applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
+  // applyFilter(filterValue: string) {
+  //   filterValue = filterValue.trim(); // Remove whitespace
+  //   filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+  //   this.dataSource.filter = filterValue;
+  // }
   ngOnDestroy() {
     // this is not needed when observable is used, in this case, we are registering user on subscription
     if (this.querySubscription) {

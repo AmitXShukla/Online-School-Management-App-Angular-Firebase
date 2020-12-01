@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { BackendService } from '../services/backend.service';
 
 @Component({
@@ -12,11 +12,11 @@ export class HeaderAdminComponent implements OnInit {
   @Input() pageTitle: string;
   @Input() helpType: string;
   emailSent = false;
-  selectedValue;
+  selectedValue: any;
   formShowing = false;
-  configData;
+  configData: any;
   userRole = 'student';
-  msgCount$;
+  msgCount$: Observable<any>;
 
   error: any;
   dataLoading: boolean = false;
@@ -36,7 +36,7 @@ export class HeaderAdminComponent implements OnInit {
   getMsgCounts(){
     this.msgCount$ = this._backendService.getUserStudentMSGCounts();
   }
-  onSubmit(formData) {
+  onSubmit(formData: any) {
     this.dataLoading = true;
     //console.log(formData);
     this._backendService.sendEmail(formData).subscribe(

@@ -14,13 +14,14 @@ export const environment = {
     emailid: 'info@elishconsulting.com'
   },
   socialAuthEnabled: true,
-  firebase : {
+  firebase: {
     apiKey: "",
-    authDomain: "",
+    authDomain: "elishcrm.firebaseapp.com",
     databaseURL: "https://elishcrm.firebaseio.com",
     projectId: "elishcrm",
-    storageBucket: "",
-    messagingSenderId: ""
+    storageBucket: "elishcrm.appspot.com",
+    messagingSenderId: "",
+    appId: ""
   }
 }
 /*

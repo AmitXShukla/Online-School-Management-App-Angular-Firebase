@@ -21,7 +21,7 @@ export class SalaryCodeComponent implements OnInit, OnDestroy {
   members: any[];
   dataSource: MatTableDataSource<any>;
   myDocData;
-  data$;
+  data$: any;
   toggleField: string;
   state: string = '';
   savedChanges = false;
@@ -166,7 +166,7 @@ export class SalaryCodeComponent implements OnInit, OnDestroy {
 
   getDoc(docId) {
     this.dataLoading = true;
-    this.data$ = this._backendService.getDoc('SALARY_CD', docId).subscribe(res => {
+    this._backendService.getDoc('SALARY_CD', docId).subscribe(res => {
       if (res) {
         this.data$ = res;
         this.editDataForm = this._fb.group({
@@ -225,10 +225,18 @@ export class SalaryCodeComponent implements OnInit, OnDestroy {
     this.dataSource.sort = this.sort;
   }
 
-  applyFilter(filterValue: string) {
-    filterValue = filterValue.trim(); // Remove whitespace
-    filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
-    this.dataSource.filter = filterValue;
+  // applyFilter(filterValue: string) {
+  //   filterValue = filterValue.trim(); // Remove whitespace
+  //   filterValue = filterValue.toLowerCase(); // Datasource defaults to lowercase matches
+  //   this.dataSource.filter = filterValue;
+  // }
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
   ngOnDestroy() {
     // this is not needed when observable is used, in this case, we are registering user on subscription
