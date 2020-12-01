@@ -2,7 +2,7 @@
   "hosting": [
     {
       "target": "angularUI",
-      "public": "dist/angularUI",
+      "public": "dist/AngularUI",
       "ignore": [
         "firebase.json",
         "**/.*",
